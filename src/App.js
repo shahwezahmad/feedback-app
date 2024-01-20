@@ -1,24 +1,79 @@
-import logo from './logo.svg';
-import './App.css';
+import Navbar from "./Navbar";
+import FeedbackForm from "./components/FeedbackForm";
+import FeedbackList from "./components/FeedbackList";
+import FeedbackStats from "./components/FeedbackStats";
+import { FaArrowRight } from "react-icons/fa";
+import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+import About from "./pages/About";
+import { useEffect, useState } from "react";
+import { DATA } from "./constant";
+import { v4 as uuidv4 } from "uuid";
 
 function App() {
+  const [feedbacks, setFeedbacks] = useState(DATA);
+  useEffect(() => {
+    console.log(feedbacks);
+  }, [feedbacks]);
+  const [editFeedback, setEditFeedback] = useState({
+    item: {},
+    edit: false,
+  });
+  const deleteFeedback = (id) => {
+    console.log(id);
+    setFeedbacks(feedbacks.filter((item) => item.id !== id));
+  };
+  const addFeedback = (newFeedback) => {
+    newFeedback.id = uuidv4();
+    console.log(newFeedback);
+    setFeedbacks([newFeedback, ...feedbacks]);
+  };
+
+  const editItem = (item) => {
+    setEditFeedback({ item, edit: true });
+    // console.log(editFeedback);
+  };
+  const updateFeedback = (id, upDatedItem) => {
+    console.log(upDatedItem);
+    setFeedbacks(
+      feedbacks.map((item) => (item.id === id ? upDatedItem : item))
+    );
+    console.log(feedbacks);
+    setEditFeedback({ item: {}, edit: false });
+    console.log(editFeedback);
+  };
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <Navbar />
+      <div className="container">
+        <Router>
+          <Routes>
+            <Route
+              path="/"
+              element={
+                <>
+                  <FeedbackForm
+                    addFeedback={addFeedback}
+                    updateFeedback={updateFeedback}
+                    editFeedback={editFeedback}
+                  />
+                  <FeedbackStats feedbacks={feedbacks} />
+                  <FeedbackList
+                    feedbacks={feedbacks}
+                    deleteFeedback={deleteFeedback}
+                    updateFeedback={updateFeedback}
+                    editItem={editItem}
+                  />
+                </>
+              }
+            />
+            <Route path="/about" element={<About />} />
+          </Routes>
+          <Link to="/about">
+            <FaArrowRight fill="white" />
+          </Link>
+        </Router>
+      </div>
+    </>
   );
 }
 
