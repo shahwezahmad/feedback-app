@@ -2,8 +2,13 @@ import React, { useEffect, useState } from "react";
 import Card from "../shared/Card";
 import Button from "../shared/Button";
 import SelectRating from "./SelectRating";
+import { useContext } from "react";
+import feebackContext from "../context/FeedbackContext";
 
-const FeedbackForm = ({ addFeedback, editFeedback, updateFeedback }) => {
+const FeedbackForm = () => {
+  const { AddFeedback, editFeedback, updateFeedback } =
+    useContext(feebackContext);
+
   useEffect(() => {
     if (editFeedback.edit === true) {
       setSelected(editFeedback.item.rating);
@@ -27,7 +32,7 @@ const FeedbackForm = ({ addFeedback, editFeedback, updateFeedback }) => {
 
   const onSubmit = (e) => {
     e.preventDefault();
-    console.log(editFeedback.edit);
+    // console.log(editFeedback.edit);
     let item = {
       rating: selected,
       text,
@@ -36,8 +41,9 @@ const FeedbackForm = ({ addFeedback, editFeedback, updateFeedback }) => {
       console.log(editFeedback.edit);
       console.log(item);
       updateFeedback(editFeedback.item.id, item);
+    } else if (editFeedback.edit === false) {
+      AddFeedback(item);
     }
-    addFeedback(item);
     setText("");
     setIsDisable(true);
     setSelected(10);

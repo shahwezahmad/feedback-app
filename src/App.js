@@ -8,41 +8,11 @@ import About from "./pages/About";
 import { useEffect, useState } from "react";
 import { DATA } from "./constant";
 import { v4 as uuidv4 } from "uuid";
+import { FeedbackProvder } from "./context/FeedbackContext";
 
 function App() {
-  const [feedbacks, setFeedbacks] = useState(DATA);
-  useEffect(() => {
-    console.log(feedbacks);
-  }, [feedbacks]);
-  const [editFeedback, setEditFeedback] = useState({
-    item: {},
-    edit: false,
-  });
-  const deleteFeedback = (id) => {
-    console.log(id);
-    setFeedbacks(feedbacks.filter((item) => item.id !== id));
-  };
-  const addFeedback = (newFeedback) => {
-    newFeedback.id = uuidv4();
-    console.log(newFeedback);
-    setFeedbacks([newFeedback, ...feedbacks]);
-  };
-
-  const editItem = (item) => {
-    setEditFeedback({ item, edit: true });
-    // console.log(editFeedback);
-  };
-  const updateFeedback = (id, upDatedItem) => {
-    console.log(upDatedItem);
-    setFeedbacks(
-      feedbacks.map((item) => (item.id === id ? upDatedItem : item))
-    );
-    console.log(feedbacks);
-    setEditFeedback({ item: {}, edit: false });
-    console.log(editFeedback);
-  };
   return (
-    <>
+    <FeedbackProvder>
       <Navbar />
       <div className="container">
         <Router>
@@ -51,18 +21,9 @@ function App() {
               path="/"
               element={
                 <>
-                  <FeedbackForm
-                    addFeedback={addFeedback}
-                    updateFeedback={updateFeedback}
-                    editFeedback={editFeedback}
-                  />
-                  <FeedbackStats feedbacks={feedbacks} />
-                  <FeedbackList
-                    feedbacks={feedbacks}
-                    deleteFeedback={deleteFeedback}
-                    updateFeedback={updateFeedback}
-                    editItem={editItem}
-                  />
+                  <FeedbackForm />
+                  <FeedbackStats />
+                  <FeedbackList />
                 </>
               }
             />
@@ -73,7 +34,7 @@ function App() {
           </Link>
         </Router>
       </div>
-    </>
+    </FeedbackProvder>
   );
 }
 
